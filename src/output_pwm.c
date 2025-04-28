@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
- *
- * SPDX-License-Identifier: MIT
- */
+* Copyright (c) 2020 The ZMK Contributors
+*
+* SPDX-License-Identifier: MIT
+*/
 
 #define DT_DRV_COMPAT zmk_output_pwm
 
@@ -12,8 +12,6 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/pwm.h>
-
-// #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -47,7 +45,6 @@ static int output_pwm_set_value(const struct device *dev, uint8_t value) {
         pwm_set_dt(&pwm, period, 0);
     }
 
-exit:
     data->busy = false;
     return rc;
 }
@@ -59,7 +56,6 @@ static int output_pwm_get_ready(const struct device *dev) {
 
 static int output_pwm_init(const struct device *dev) {
     struct output_pwm_data *data = dev->data;
-    const struct output_pwm_config *config = dev->config;
     data->dev = dev;
     return output_pwm_set_value(dev, 0);
 }
@@ -78,9 +74,7 @@ static const struct output_generic_api api = {
     static const struct output_pwm_config config_##n = {                                           \
         .pwm = PWM_DT_SPEC_GET(DT_DRV_INST(n)),                                                    \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(0, output_pwm_init, DEVICE_DT_INST_GET(n), &data_##n, &config_##n,       \
+    DEVICE_DT_INST_DEFINE(n, output_pwm_init, NULL, &data_##n, &config_##n,                        \
                           POST_KERNEL, ZMK_OUTPUT_INIT_PRIORITY, &api);
 
 DT_INST_FOREACH_STATUS_OKAY(OPWM_INST)
-
-// #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
